@@ -1,8 +1,24 @@
-Plugin Template for Albert
+Find a Doc plugin for Albert
 -------
-[Albert](https://github.com/albertlauncher/albert) extension for quickly and easily searching the Laravel documentation.
+<p align="center">
+<img src="images/fad-crop.png" width="300px" >
+</p>
+
+[Albert](https://github.com/albertlauncher/albert) extension for quickly and easily searching the documentation libraries.
+
+Originally inspired by [albert-laravel-docs by rickwest](https://github.com/rickwest/albert-laravel-docs)
 
 ![Screenshot](images/screenshot.gif)
+
+Currently supported libraries
+-------
+- Laravel
+- MUI
+- PEST PHP
+- Tailwind
+- React
+- Bootstrap
+- InertiaJs
 
 Requirements
 -------
@@ -13,33 +29,17 @@ Installation
 Simply clone this project into your extension directory by running the following command:
 
 ```
-git clone https://github.com/use-the-fork/albert-laravel-docs.git ~/.local/share/albert/python/plugins/albert-laravel-docs
+git clone https://github.com/use-the-fork/albert-find-a-doc.git ~/.local/share/albert/python/plugins/albert-find-a-doc
 ```
 
 Usage
 -------
-Type `lv` followed by your search query. 
+Type `fad` followed by a library and your search query. 
 
 ```
-lv <query>
-lv unit testing
+fad <library> <query>
+fad lv unit testing
 ```
-
-My Other Albert Plugins
--------
-
-- [Laravel Docs Extension](https://github.com/use-the-fork/albert-laravel-docs)
-- [PEST Docs Extension](https://github.com/use-the-fork/albert-pest-docs)
-- [MUI Docs Extension](https://github.com/use-the-fork/albert-mui-docs)
-
-
-### For Windows Users WOX Plugins
-
-
-- [Laravel Docs Extension](https://github.com/use-the-fork/wox-laravel-docs)
-- [PEST Docs Extension](https://github.com/use-the-fork/wox-pest-docs)
-- [MUI Docs Extension](https://github.com/use-the-fork/wox-mui-docs)
-
 
 Support Me
 -------

@@ -1,26 +1,31 @@
 """
-Search the Laravel Documentation
+Search multiple Documentation sites
 """
-
+import sys
 from albert import Action, Item, QueryHandler, openUrl, info, debug
 import os
-from algoliasearch.search_client import SearchClient
+
+sys.path.append(os.path.dirname(__file__))
+
+from laravel import Laravel
+from mui import Mui
+from pest import Pest
+from tailwind import Tailwind
+from bootstrap import Bootstrap
+from inertiajs import Inertiajs
+from react import React
 
 md_iid = "0.5"
 md_version = "0.4"
 md_id = __name__
-md_name = "Laravel"
-md_docs = "https://laravel.com/docs/"
-md_trigger = "lv"
-md_description = "Albert extension for quickly and easily searching the Laravel documentation"
-md_url = "https://github.com/use-the-fork/albert-laravel-docs/issues"
+md_name = "Find a Doc"
+md_description = "Albert extension for quickly and easily searching documentation sites"
+md_url = "https://github.com/use-the-fork/albert-find-a-doc/issues"
 md_maintainers = "@use-the-fork"
+md_lib_dependencies = ["algoliasearch"]
+md_trigger = "fad "
 
-client = SearchClient.create("E3MIRNPJH5", "1fa3a8fec06eb1858d6ca137211225c0")
-index = client.init_index("laravel")
-
-GOOGLE_ICON_PATH = "{}/images/google.png".format(os.path.dirname(__file__))
-ICON_PATH = "{}/images/icon.png".format(os.path.dirname(__file__))
+ICON_PATH = "{}/images/fad-icon.png".format(os.path.dirname(__file__))
 
 
 class Plugin(QueryHandler):
@@ -34,23 +39,53 @@ class Plugin(QueryHandler):
         return md_description
 
     def defaultTrigger(self):
-        return '{} '.format(md_trigger),
+        return md_trigger
 
     def handleQuery(self, query):
-            query.add(
-                Item(
-                    id=f'{md_name}/open_{md_name}_docs',
-                    icon=[ICON_PATH],
-                    text='Open {} Docs'.format(md_name),
-                    subtext="No match found. Open {}".format(md_docs),
-                    actions=[
-                        Action(
-                            "Open",
-                            'Open the {} Documentation'.format(md_name.replace("https://", "")),
-                            lambda u=md_docs: openUrl(u)
-                        )
+        if not query.isValid:
+            return
 
-                    ],
-                )
+        the_query = query.string.strip().split(" ", 1)
+
+        search_objects = {
+            "lv": Laravel,
+            "laravel": Laravel,
+            "mui": Mui,
+            "pest": Pest,
+            "tw": Tailwind,
+            "tailwind": Tailwind,
+            "bs": Bootstrap,
+            "bootstrap": Bootstrap,
+            "ijs": Inertiajs,
+            "inertiajs": Inertiajs,
+            "react": React,
+        }
+
+        items = [
+            Item(
+                id=f'{md_name}/open_{md_name}_NA',
+                icon=[ICON_PATH],
+                text='Select a library from the list below:',
+                subtext=", ".join(search_objects.keys()),
             )
+        ]
+
+        try:
+            if the_query[1] and the_query[0] in search_objects:
+                search_class = search_objects[the_query[0]]
+                search = search_class(md_name)
+                items = search.handleQuery(search_item=the_query[1])
+            elif the_query[0] != "":
+                items = [
+                    Item(
+                        id=f'{md_name}/open_{md_name}_Invalid_query',
+                        icon=[ICON_PATH],
+                        text='Invalid Query Value',
+                        subtext="",
+                    )
+                ]
+        except IndexError:
+            pass
+
+        query.add(items)
 
