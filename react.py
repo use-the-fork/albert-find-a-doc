@@ -1,22 +1,37 @@
-import urllib.parse
 from algoliasearch.search_client import SearchClient
 import os
-from albert import Action, Item, QueryHandler, openUrl, info, debug
+from albert import Action, Item, openUrl
 import sys
 
 sys.path.append(os.path.dirname(__file__))
 
+from dto import ItemDTO, AlgoliaSearchDTO
+from base_document import BaseDocument
 
-class React:
-    client = SearchClient.create("1FCF9AYYAT", "e8451218980a351815563de007648b00")
-    index = client.init_index("beta-react")
-    icon = "{}/images/react.png".format(os.path.dirname(__file__))
-    docs = "https://react.dev/reference/react/"
+algolia_search_dto = AlgoliaSearchDTO(app_id='1FCF9AYYAT', api_key='e8451218980a351815563de007648b00',
+                                      search_index='beta-react', request_options={})
+
+
+class React(BaseDocument):
+    client = SearchClient.create(algolia_search_dto.app_id, algolia_search_dto.api_key)
+    index = client.init_index(algolia_search_dto.search_index)
+    md_name = "React"
+    md_icon = "{}/images/{}".format(os.path.dirname(__file__), 'react.png')
+    md_docs = 'https://react.dev/reference/react/'
+    md_search = 'react'
+    md_completion = 'fad react '
+
+    completion = Item(
+                id='fad/{}_completion'.format(md_name),
+                icon=[md_icon],
+                text=md_name,
+                completion=md_completion
+            )
 
     def __init__(self, md_name):
-        self.md_name = md_name
+        super().__init__(md_name)
 
-    def getTitle(self, hierarchy):
+    def get_title(self, hierarchy):
         if hierarchy["lvl6"] is not None:
             return hierarchy["lvl6"]
 
@@ -40,7 +55,7 @@ class React:
 
         return None
 
-    def getSubtitle(self, hierarchy):
+    def get_subtitle(self, hierarchy):
         if hierarchy["lvl6"] is not None:
             return hierarchy["lvl5"]
 
@@ -61,20 +76,18 @@ class React:
 
         return None
 
-    def handleQuery(self, search_item):
+    def handle_query(self, search_item):
         items = []
 
         if search_item:
-
             search = self.index.search(
-                search_item,
-                {"hitsPerPage": 5, "highlightPreTag": "...", "highlightPostTag": "..."}
+                search_item, self.algolia_search_query(algolia_search_dto.request_options)
             )
 
             for hit in search["hits"]:
 
-                title = self.getTitle(hit['hierarchy'])
-                subtitle = self.getSubtitle(hit['hierarchy'])
+                title = self.get_title(hit['hierarchy'])
+                subtitle = self.get_subtitle(hit['hierarchy'])
                 url = hit["url"]
 
                 text = False
@@ -88,9 +101,9 @@ class React:
                     subtitle = text
 
                 items.append(
-                    Item(
+                    ItemDTO(
                         id=f'{self.md_name}/{hit["objectID"]}',
-                        icon=[self.icon],
+                        icon=self.md_icon,
                         text=title,
                         subtext=subtitle if subtitle is not None else "",
                         actions=[
@@ -104,42 +117,6 @@ class React:
                 )
 
             if len(items) == 0:
-                term = "reactjs {}".format(search_item)
-
-                google = "https://www.google.com/search?q={}".format(
-                    urllib.parse.quote(term)
-                )
-
-                items.append(
-                    Item(
-                        id=f'{self.md_name}/search_google',
-                        icon=["{}/images/google.png".format(os.path.dirname(__file__))],
-                        text="Search Google",
-                        subtext='No match found. Search Google for: "{}"'.format(term),
-                        actions=[
-                            Action(
-                                "Open",
-                                'No match found. Search Google',
-                                lambda u=google: openUrl(u)
-                            )
-                        ],
-                    )
-                )
-
-                items.append(
-                    Item(
-                        id=f'{self.md_name}/open_{self.md_name}_docs',
-                        icon=[self.icon],
-                        text='Open {} Docs'.format(self.md_name),
-                        subtext="No match found. Open {}".format(self.docs),
-                        actions=[
-                            Action(
-                                "Open",
-                                'Open the {} Documentation'.format(self.md_name.replace("https://", "")),
-                                lambda u=self.docs: openUrl(u)
-                            )
-                        ],
-                    )
-                )
+                items = self.no_results(search_item)
 
         return items

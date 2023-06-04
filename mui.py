@@ -1,23 +1,38 @@
 import urllib.parse
 from algoliasearch.search_client import SearchClient
 import os
-from albert import Action, Item, QueryHandler, openUrl, info, debug
+from albert import Action, Item, openUrl
 import sys
 
 sys.path.append(os.path.dirname(__file__))
 
+from dto import ItemDTO, AlgoliaSearchDTO
+from base_document import BaseDocument
+
+algolia_search_dto = AlgoliaSearchDTO(app_id='TZGZ85B9TB', api_key='8177dfb3e2be72b241ffb8c5abafa899',
+                                      search_index='material-ui', request_options={"facetFilters": "product:material-ui"})
 
 
-class Mui:
-    client = SearchClient.create("TZGZ85B9TB", "8177dfb3e2be72b241ffb8c5abafa899")
-    index = client.init_index("material-ui")
-    icon = "{}/images/mui.png".format(os.path.dirname(__file__))
-    docs = "https://mui.com/material-ui/"
+class Mui(BaseDocument):
+    client = SearchClient.create(algolia_search_dto.app_id, algolia_search_dto.api_key)
+    index = client.init_index(algolia_search_dto.search_index)
+    md_name = "MUI"
+    md_icon = "{}/images/{}".format(os.path.dirname(__file__), 'mui.png')
+    md_docs = 'https://mui.com/material-ui/'
+    md_search = 'mui'
+    md_completion = 'fad mui '
+
+    completion = Item(
+                id='fad/{}_completion'.format(md_name),
+                icon=[md_icon],
+                text=md_name,
+                completion=md_completion
+            )
 
     def __init__(self, md_name):
-        self.md_name = md_name
+        super().__init__(md_name)
 
-    def getTitle(self, hierarchy):
+    def get_title(self, hierarchy):
         if hierarchy["lvl6"] is not None:
             return hierarchy["lvl6"]
 
@@ -41,7 +56,7 @@ class Mui:
 
         return None
 
-    def getSubtitle(self, hierarchy):
+    def get_subtitle(self, hierarchy):
         if hierarchy["lvl6"] is not None:
             return hierarchy["lvl5"]
 
@@ -62,20 +77,18 @@ class Mui:
 
         return None
 
-    def handleQuery(self, search_item):
+    def handle_query(self, search_item):
         items = []
 
         if search_item:
-
             search = self.index.search(
-                search_item,
-                {"facetFilters": "product:material-ui", "hitsPerPage": 5, "highlightPreTag": "...", "highlightPostTag": "..."}
+                search_item, self.algolia_search_query(algolia_search_dto.request_options)
             )
 
             for hit in search["hits"]:
 
-                title = self.getTitle(hit['hierarchy'])
-                subtitle = self.getSubtitle(hit['hierarchy'])
+                title = self.get_title(hit['hierarchy'])
+                subtitle = self.get_subtitle(hit['hierarchy'])
                 url = hit["url"]
 
                 text = False
@@ -89,9 +102,9 @@ class Mui:
                     subtitle = text
 
                 items.append(
-                    Item(
+                    ItemDTO(
                         id=f'{self.md_name}/{hit["objectID"]}',
-                        icon=[self.icon],
+                        icon=self.md_icon,
                         text=title,
                         subtext=subtitle if subtitle is not None else "",
                         actions=[
@@ -105,42 +118,6 @@ class Mui:
                 )
 
             if len(items) == 0:
-                term = "mui {}".format(search_item)
-
-                google = "https://www.google.com/search?q={}".format(
-                    urllib.parse.quote(term)
-                )
-
-                items.append(
-                    Item(
-                        id=f'{self.md_name}/search_google',
-                        icon=["{}/images/google.png".format(os.path.dirname(__file__))],
-                        text="Search Google",
-                        subtext='No match found. Search Google for: "{}"'.format(term),
-                        actions=[
-                            Action(
-                                "Open",
-                                'No match found. Search Google',
-                                lambda u=google: openUrl(u)
-                            )
-                        ],
-                    )
-                )
-
-                items.append(
-                    Item(
-                        id=f'{self.md_name}/open_{self.md_name}_docs',
-                        icon=[self.icon],
-                        text='Open {} Docs'.format(self.md_name),
-                        subtext="No match found. Open {}".format(self.docs),
-                        actions=[
-                            Action(
-                                "Open",
-                                'Open the {} Documentation'.format(self.md_name.replace("https://", "")),
-                                lambda u=self.docs: openUrl(u)
-                            )
-                        ],
-                    )
-                )
+                items = self.no_results(search_item)
 
         return items
