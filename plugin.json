@@ -1,0 +1,12 @@
+{
+  "ID": "65F42C3GEBFC49A0971FA47294102C01",
+  "ActionKeyword": "fad",
+  "Name": "Find a Doc",
+  "Description": "Wox extension for quickly and easily searching the documentation libraries",
+  "Author": "use-the-fork",
+  "Version": "1.0.0",
+  "Language": "python",
+  "Website": "https://github.com/use-the-fork/albert-find-a-doc",
+  "IcoPath": "images\\fad-icon.png",
+  "ExecuteFileName": "main.py"
+}

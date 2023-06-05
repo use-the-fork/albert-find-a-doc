@@ -1,13 +1,12 @@
-import urllib.parse
 from algoliasearch.search_client import SearchClient
 import os
-from albert import Action, Item, openUrl
 import sys
 
 sys.path.append(os.path.dirname(__file__))
 
-from dto import ItemDTO, AlgoliaSearchDTO
+from dto import ItemDTO, AlgoliaSearchDTO, ActionDTO
 from base_document import BaseDocument
+from typing import List
 
 algolia_search_dto = AlgoliaSearchDTO(app_id='TZGZ85B9TB', api_key='8177dfb3e2be72b241ffb8c5abafa899',
                                       search_index='material-ui', request_options={"facetFilters": "product:material-ui"})
@@ -22,9 +21,9 @@ class Mui(BaseDocument):
     md_search = 'mui'
     md_completion = 'fad mui '
 
-    completion = Item(
+    completion = ItemDTO(
                 id='fad/{}_completion'.format(md_name),
-                icon=[md_icon],
+                icon=md_icon,
                 text=md_name,
                 completion=md_completion
             )
@@ -77,7 +76,7 @@ class Mui(BaseDocument):
 
         return None
 
-    def handle_query(self, search_item):
+    def handle_query(self, search_item) -> List[ItemDTO]:
         items = []
 
         if search_item:
@@ -107,13 +106,12 @@ class Mui(BaseDocument):
                         icon=self.md_icon,
                         text=title,
                         subtext=subtitle if subtitle is not None else "",
-                        actions=[
-                            Action(
-                                "Open",
-                                'Open the {} Documentation'.format(self.md_name),
-                                lambda u=url: openUrl(u)
-                            )
-                        ],
+                        action=
+                        ActionDTO(
+                            text="Open",
+                            subtext='Open the {} Documentation'.format(self.md_name),
+                            url_to_open=url
+                        )
                     )
                 )
 

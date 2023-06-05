@@ -1,11 +1,10 @@
 from algoliasearch.search_client import SearchClient
 import os
-from albert import Action, Item, openUrl
 import sys
 
 sys.path.append(os.path.dirname(__file__))
 
-from dto import ItemDTO, AlgoliaSearchDTO
+from dto import ItemDTO, AlgoliaSearchDTO, ActionDTO
 from base_document import BaseDocument
 
 algolia_search_dto = AlgoliaSearchDTO(app_id='1FCF9AYYAT', api_key='e8451218980a351815563de007648b00',
@@ -21,9 +20,9 @@ class React(BaseDocument):
     md_search = 'react'
     md_completion = 'fad react '
 
-    completion = Item(
+    completion = ItemDTO(
                 id='fad/{}_completion'.format(md_name),
-                icon=[md_icon],
+                icon=md_icon,
                 text=md_name,
                 completion=md_completion
             )
@@ -106,13 +105,12 @@ class React(BaseDocument):
                         icon=self.md_icon,
                         text=title,
                         subtext=subtitle if subtitle is not None else "",
-                        actions=[
-                            Action(
-                                "Open",
-                                'Open the {} Documentation'.format(self.md_name),
-                                lambda u=url: openUrl(u)
-                            )
-                        ],
+                        action=
+                        ActionDTO(
+                            text="Open",
+                            subtext='Open the {} Documentation'.format(self.md_name),
+                            url_to_open=url
+                        )
                     )
                 )
 

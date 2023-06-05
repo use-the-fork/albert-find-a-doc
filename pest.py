@@ -1,13 +1,13 @@
-import urllib.parse
+
 from algoliasearch.search_client import SearchClient
 import os
-from albert import Action, Item, openUrl
 import sys
 
 sys.path.append(os.path.dirname(__file__))
 
-from dto import ItemDTO, AlgoliaSearchDTO
+from dto import ItemDTO, AlgoliaSearchDTO, ActionDTO
 from base_document import BaseDocument
+from typing import List
 
 algolia_search_dto = AlgoliaSearchDTO(app_id='1JFXODBVDH', api_key='dd63fbb022012f3144613ee088b8645b',
                                       search_index='pestphp', request_options={})
@@ -22,9 +22,9 @@ class Pest(BaseDocument):
     md_search = 'pest php'
     md_completion = 'fad pest '
 
-    completion = Item(
+    completion = ItemDTO(
                 id='fad/{}_completion'.format(md_name),
-                icon=[md_icon],
+                icon=md_icon,
                 text=md_name,
                 completion=md_completion
             )
@@ -77,7 +77,7 @@ class Pest(BaseDocument):
 
         return None
 
-    def handle_query(self, search_item):
+    def handle_query(self, search_item) -> List[ItemDTO]:
         items = []
 
         if search_item:
@@ -107,13 +107,12 @@ class Pest(BaseDocument):
                         icon=self.md_icon,
                         text=title,
                         subtext=subtitle if subtitle is not None else "",
-                        actions=[
-                            Action(
-                                "Open",
-                                'Open the {} Documentation'.format(self.md_name),
-                                lambda u=url: openUrl(u)
-                            )
-                        ],
+                        action=
+                        ActionDTO(
+                            text="Open",
+                            subtext='Open the {} Documentation'.format(self.md_name),
+                            url_to_open=url
+                        )
                     )
                 )
 

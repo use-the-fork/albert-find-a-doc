@@ -1,12 +1,10 @@
 import urllib.parse
-from algoliasearch.search_client import SearchClient
 import os
-from albert import Action, openUrl
 import sys
 
 sys.path.append(os.path.dirname(__file__))
 
-from dto import ItemDTO
+from dto import ItemDTO, ActionDTO
 
 
 class BaseDocument:
@@ -36,13 +34,13 @@ class BaseDocument:
                 icon="{}/images/google.png".format(os.path.dirname(__file__)),
                 text="Search Google",
                 subtext='No match found. Search Google for: "{}"'.format(term),
-                actions=[
-                    Action(
-                        "Open",
-                        'No match found. Search Google',
-                        lambda u=google: openUrl(u)
-                    )
-                ],
+                action=
+                ActionDTO(
+                    text="Open",
+                    subtext='No match found. Search Google',
+                    url_to_open=google
+                )
+                ,
             )
         )
 
@@ -52,12 +50,12 @@ class BaseDocument:
                 icon=self.md_icon,
                 text='Open {} Docs'.format(self.md_name),
                 subtext="No match found. Open {}".format(self.md_docs),
-                actions=[
-                    Action(
-                        "Open",
-                        'Open the {} Documentation'.format(self.md_name.replace("https://", "")),
-                        lambda u=self.md_docs: openUrl(u)
-                    )
-                ],
+                action=
+                ActionDTO(
+                    text="Open",
+                    subtext='Open the {} Documentation'.format(self.md_name.replace("https://", "")),
+                    url_to_open=self.md
+                )
+                ,
             )
         )

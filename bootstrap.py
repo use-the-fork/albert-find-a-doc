@@ -1,13 +1,12 @@
-import urllib.parse
 from algoliasearch.search_client import SearchClient
 import os
-from albert import Action, Item, openUrl
 import sys
 
 sys.path.append(os.path.dirname(__file__))
 
-from dto import ItemDTO, AlgoliaSearchDTO
+from dto import ItemDTO, AlgoliaSearchDTO, ActionDTO
 from base_document import BaseDocument
+from typing import List
 
 algolia_search_dto = AlgoliaSearchDTO(app_id='BH4D9OD16A', api_key='5990ad008512000bba2cf951ccf0332f',
                                       search_index='bootstrap', request_options={"facetFilters": "version:5.0"})
@@ -22,12 +21,12 @@ class Bootstrap(BaseDocument):
     md_search = 'bootstrap 5'
     md_completion = 'fad bootstrap '
 
-    completion = Item(
-                id='fad/{}_completion'.format(md_name),
-                icon=[md_icon],
-                text=md_name,
-                completion=md_completion
-            )
+    completion = ItemDTO(
+        id='fad/{}_completion'.format(md_name),
+        icon=md_icon,
+        text=md_name,
+        completion=md_completion
+    )
 
     def __init__(self, md_name):
         super().__init__(md_name)
@@ -77,7 +76,7 @@ class Bootstrap(BaseDocument):
 
         return None
 
-    def handle_query(self, search_item):
+    def handle_query(self, search_item) -> List[ItemDTO]:
         items = []
 
         if search_item:
@@ -107,13 +106,12 @@ class Bootstrap(BaseDocument):
                         icon=self.md_icon,
                         text=title,
                         subtext=subtitle if subtitle is not None else "",
-                        actions=[
-                            Action(
-                                "Open",
-                                'Open the {} Documentation'.format(self.md_name),
-                                lambda u=url: openUrl(u)
-                            )
-                        ],
+                        action=
+                        ActionDTO(
+                            text="Open",
+                            subtext='Open the {} Documentation'.format(self.md_name),
+                            url_to_open=url
+                        )
                     )
                 )
 

@@ -1,12 +1,19 @@
 import os
 import sys
-from albert import Action
 
 sys.path.append(os.path.dirname(__file__))
 
 
+class ActionDTO:
+    def __init__(self, text: str = '', subtext: str = '', url_to_open: str = '', ):
+        self.text = text
+        self.subtext = subtext
+        self.url_to_open = url_to_open
+
+
 class ItemDTO:
-    def __init__(self, id, icon: str = '', text: str = '', subtext: str = '', actions: list[Action] = []):
+    def __init__(self, id, icon: str = '', text: str = '', subtext: str = '', action: ActionDTO = None,
+                 completion: str = None):
         if not id:
             raise ValueError("Id cannot be empty")
 
@@ -14,7 +21,8 @@ class ItemDTO:
         self.icon = icon
         self.text = text
         self.subtext = subtext
-        self.actions = actions
+        self.action = action
+        self.completion = completion
 
 
 class AlgoliaSearchDTO:
