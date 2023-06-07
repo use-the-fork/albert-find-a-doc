@@ -20,6 +20,7 @@ class Inertiajs(BaseDocument):
     md_docs = 'https://www.inertiajs.com/'
     md_search = 'inertiajs'
     md_completion = 'fad inertiajs '
+    md_possible_completions = ['inertiajs', 'ijs']
 
     completion = ItemDTO(
                 id='fad/{}_completion'.format(md_name),

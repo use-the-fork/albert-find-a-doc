@@ -4,7 +4,7 @@ Find a Doc plugin for Albert
 <img src="images/fad-crop.png" width="300px" >
 </p>
 
-[Albert](https://github.com/albertlauncher/albert) extension for quickly and easily searching the documentation libraries.
+[Albert](https://github.com/albertlauncher/albert) and [WOX](http://www.wox.one/) extension for quickly and easily searching documentation libraries.
 
 Originally inspired by [albert-laravel-docs by rickwest](https://github.com/rickwest/albert-laravel-docs)
 
@@ -28,6 +28,12 @@ Installation
 -------
 Simply clone this project into your extension directory by running the following command:
 
+Albert Installation
+```
+git clone https://github.com/use-the-fork/albert-find-a-doc.git ~/.local/share/albert/python/plugins/albert-find-a-doc
+```
+
+Wox Installation
 ```
 git clone https://github.com/use-the-fork/albert-find-a-doc.git ~/.local/share/albert/python/plugins/albert-find-a-doc
 ```

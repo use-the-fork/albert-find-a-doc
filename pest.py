@@ -21,6 +21,7 @@ class Pest(BaseDocument):
     md_docs = 'https://pestphp.com/docs/'
     md_search = 'pest php'
     md_completion = 'fad pest '
+    md_possible_completions = ['pest']
 
     completion = ItemDTO(
                 id='fad/{}_completion'.format(md_name),

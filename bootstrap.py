@@ -20,6 +20,7 @@ class Bootstrap(BaseDocument):
     md_docs = 'https://getbootstrap.com/docs/5.0/'
     md_search = 'bootstrap 5'
     md_completion = 'fad bootstrap '
+    md_possible_completions = ['bs', 'bootstrap']
 
     completion = ItemDTO(
         id='fad/{}_completion'.format(md_name),

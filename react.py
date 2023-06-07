@@ -19,6 +19,7 @@ class React(BaseDocument):
     md_docs = 'https://react.dev/reference/react/'
     md_search = 'react'
     md_completion = 'fad react '
+    md_possible_completions = ['react', 'r']
 
     completion = ItemDTO(
                 id='fad/{}_completion'.format(md_name),

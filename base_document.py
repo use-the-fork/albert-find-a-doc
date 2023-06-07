@@ -11,6 +11,7 @@ class BaseDocument:
     md_icon = "{}/images/{}".format(os.path.dirname(__file__), 'fad-icon.png')
     md_docs = ""
     md_search = ""
+    md_possible_completions = []
 
     def __init__(self, md_name: str):
         self.md_name = md_name
@@ -54,8 +55,9 @@ class BaseDocument:
                 ActionDTO(
                     text="Open",
                     subtext='Open the {} Documentation'.format(self.md_name.replace("https://", "")),
-                    url_to_open=self.md
+                    url_to_open=self.md_docs
                 )
-                ,
             )
         )
+
+        return items

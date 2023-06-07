@@ -20,6 +20,7 @@ class Mui(BaseDocument):
     md_docs = 'https://mui.com/material-ui/'
     md_search = 'mui'
     md_completion = 'fad mui '
+    md_possible_completions = ['mui', 'materialui']
 
     completion = ItemDTO(
                 id='fad/{}_completion'.format(md_name),

@@ -20,6 +20,7 @@ class Laravel(BaseDocument):
     md_docs = 'https://laravel.com/docs/'
     md_search = 'laravel'
     md_completion = 'fad laravel '
+    md_possible_completions = ['lv', 'laravel']
 
     completion = ItemDTO(
                 id='fad/{}_completion'.format(md_name),

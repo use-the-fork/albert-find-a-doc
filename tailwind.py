@@ -19,6 +19,7 @@ class Tailwind(BaseDocument):
     md_docs = 'https://tailwindcss.com/docs/'
     md_search = 'tailwindcss'
     md_completion = 'fad tailwind '
+    md_possible_completions = ['tailwind', 'tw']
 
     completion = ItemDTO(
         id='fad/{}_completion'.format(md_name),
